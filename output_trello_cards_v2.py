@@ -30,7 +30,7 @@ counter = 1
 print "項番, ステータス, カード名, 説明, 担当者, 更新日時"
 for card in data['cards']:
 	closed = card['closed']
-	if (closed == True):
+	if (closed == False):
 		updated_date = card['dateLastActivity']
 		desc = card['desc']
 		card_id = card['id']
