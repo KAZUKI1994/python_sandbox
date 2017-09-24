@@ -1,22 +1,31 @@
+#! /usr/bin/env python
 # coding: utf-8
+
 import json
+import sys
 
-# set json file exported from trello at current directory
-f = open('file.json', 'r')
-data = json.load(f)
+
+#
+# Load Json File From Standard Input
+#
+with open(sys.argv[1], 'r') as f:
+	data = json.load(f, strict=False)
+	print(data)
+
 
 # 
-# getting members
+# Getting members
 # 
+
 members = {}
 for member in data['members']:
 	member_id = member['id']
 	member_name = member['fullName']
 	members.update({member_id: member_name})
+#
+# Getting lists
+#
 
-#
-# getting lists
-#
 lists = {}
 for list in data['lists']:
 	list_id = list['id']
@@ -24,10 +33,11 @@ for list in data['lists']:
 	lists.update({list_id: list_name})
 
 #
-#  getting cards
+#  Getting cards
 #  
+
 counter = 1
-print "項番, ステータス, カード名, 説明, 担当者, 更新日時"
+print("項番, ステータス, カード名, 説明, 担当者, 更新日時")
 for card in data['cards']:
 	closed = card['closed']
 	if (closed == False):
@@ -48,5 +58,5 @@ for card in data['cards']:
 		# list_name
 		list_name = lists[list_id]
 
-		print str(counter) + ", " + list_name + ", " + title + ", " + desc + ", " + asigned_member_name + ", " + updated_date
+		print(str(counter) + ", " + list_name + ", " + title + ", " + desc + ", " + asigned_member_name + ", " + updated_date)
 		counter = counter + 1
