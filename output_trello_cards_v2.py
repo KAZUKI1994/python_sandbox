@@ -1,31 +1,29 @@
 #! /usr/bin/env python
 # coding: utf-8
 
-import json
 import sys
+import json
+import csv
 
 
 #
-# Load Json File From Standard Input
+# Load Json File from ComandLine argument
 #
 with open(sys.argv[1], 'r') as f:
 	data = json.load(f, strict=False)
-	print(data)
-
 
 # 
-# Getting members
+# Set members Dictionary
 # 
-
 members = {}
 for member in data['members']:
 	member_id = member['id']
 	member_name = member['fullName']
 	members.update({member_id: member_name})
-#
-# Getting lists
-#
 
+#
+# Set lists Dictionary
+#
 lists = {}
 for list in data['lists']:
 	list_id = list['id']
@@ -33,11 +31,9 @@ for list in data['lists']:
 	lists.update({list_id: list_name})
 
 #
-#  Getting cards
-#  
-
-counter = 1
-print("項番, ステータス, カード名, 説明, 担当者, 更新日時")
+#  Get cards value
+#
+tickets = []
 for card in data['cards']:
 	closed = card['closed']
 	if (closed == False):
@@ -58,5 +54,14 @@ for card in data['cards']:
 		# list_name
 		list_name = lists[list_id]
 
-		print(str(counter) + ", " + list_name + ", " + title + ", " + desc + ", " + asigned_member_name + ", " + updated_date)
-		counter = counter + 1
+		tickets.append([list_name, title, desc, asigned_member_name, updated_date])
+
+
+#
+# Write CSV
+#
+with open('trello_cards.csv', 'w', newline='') as csvFile:
+	csvwriter = csv.writer(csvFile, delimiter=',',quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+	csvwriter.writerow(['リスト名', 'カード名', '説明', '担当者', '更新日時'])
+	for ticket in tickets:
+		csvwriter.writerow(ticket)
